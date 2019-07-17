@@ -21,10 +21,8 @@ public class R<T> extends CommonResponse<T> {
         this.data = data;
     }
 
-    public R(T data, String msg) {
-        super();
-        this.data = data;
-        this.message = msg;
+    public R(int code, String msg) {
+        super(code, msg);
     }
 
     public R(Throwable e) {

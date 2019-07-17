@@ -14,6 +14,10 @@ public class QR<T> extends QueryDataResponse<T> {
         super();
     }
 
+    public QR(int code, String msg) {
+        super(code, msg);
+    }
+
     public QR(QueryData<T> data) {
         super(data);
     }

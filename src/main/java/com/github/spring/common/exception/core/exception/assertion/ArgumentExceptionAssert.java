@@ -26,5 +26,4 @@ public interface ArgumentExceptionAssert extends IResponseEnum, Assert {
 
         return new ArgumentException(this, args, msg, t);
     }
-
 }

@@ -11,6 +11,11 @@ import lombok.EqualsAndHashCode;
 public class QueryDataResponse<T> extends CommonResponse<QueryData<T>> {
 
     public QueryDataResponse() {
+        super();
+    }
+
+    public QueryDataResponse(int code, String msg) {
+        super(code, msg);
     }
 
     public QueryDataResponse(QueryData<T> data) {
