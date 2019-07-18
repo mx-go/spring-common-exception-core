@@ -7,7 +7,7 @@ import com.github.spring.common.exception.core.exception.BusinessException;
 import java.text.MessageFormat;
 
 /**
- * <p>业务异常断言</p>
+ * 业务异常断言
  */
 public interface BusinessExceptionAssert extends IResponseEnum, Assert {
 

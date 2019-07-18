@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * <p>通用返回结果</p>
+ * 通用返回结果
  */
 @Getter
 @AllArgsConstructor

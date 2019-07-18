@@ -1,9 +1,7 @@
 package com.github.spring.common.exception.core.constant;
 
 /**
- * <pre>
- *  字典接口
- * </pre>
+ * 字典接口
  */
 public interface Dictionary {
     /**

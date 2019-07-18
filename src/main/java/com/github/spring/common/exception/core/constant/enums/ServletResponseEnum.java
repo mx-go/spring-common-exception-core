@@ -6,7 +6,8 @@ import lombok.Getter;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * <p>异常类与http status对照关系</p>
+ * 异常类与http status对照关系
+ *
  * @see org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
  */
 @Getter
@@ -28,8 +29,7 @@ public enum ServletResponseEnum {
     HttpMediaTypeNotSupportedException(4415, "", HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE),
     ConversionNotSupportedException(4500, "", HttpServletResponse.SC_INTERNAL_SERVER_ERROR),
     HttpMessageNotWritableException(4500, "", HttpServletResponse.SC_INTERNAL_SERVER_ERROR),
-    AsyncRequestTimeoutException(4503, "", HttpServletResponse.SC_SERVICE_UNAVAILABLE)
-    ;
+    AsyncRequestTimeoutException(4503, "", HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 
     /**
      * 返回码，目前与{@link #statusCode}相同

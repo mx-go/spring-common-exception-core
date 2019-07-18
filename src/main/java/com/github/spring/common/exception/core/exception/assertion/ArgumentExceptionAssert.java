@@ -7,9 +7,7 @@ import com.github.spring.common.exception.core.exception.BaseException;
 import java.text.MessageFormat;
 
 /**
- * <pre>
  * 参数不合法
- * </pre>
  */
 public interface ArgumentExceptionAssert extends IResponseEnum, Assert {
 

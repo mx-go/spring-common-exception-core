@@ -6,8 +6,8 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * <p>枚举类异常断言，提供简便的方式判断条件，并在条件满足时抛出异常</p>
- * <p>错误码和错误信息定义在枚举类中，在本断言方法中，传递错误信息需要的参数</p>
+ * 枚举类异常断言，提供简便的方式判断条件，并在条件满足时抛出异常
+ * 错误码和错误信息定义在枚举类中，在本断言方法中，传递错误信息需要的参数
  */
 public interface Assert {
     /**
@@ -21,7 +21,7 @@ public interface Assert {
     /**
      * 创建异常
      *
-     * @param t 错误
+     * @param t    错误
      * @param args 参数
      * @return BaseException
      */

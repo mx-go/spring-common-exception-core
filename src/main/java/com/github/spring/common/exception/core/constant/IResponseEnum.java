@@ -1,9 +1,7 @@
 package com.github.spring.common.exception.core.constant;
 
 /**
- * <pre>
- *  异常返回码枚举接口
- * </pre>
+ * 异常返回码枚举接口
  */
 public interface IResponseEnum {
     /**

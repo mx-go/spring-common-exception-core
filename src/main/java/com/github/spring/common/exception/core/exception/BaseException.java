@@ -4,7 +4,7 @@ import com.github.spring.common.exception.core.constant.IResponseEnum;
 import lombok.Getter;
 
 /**
- * <p>基础异常类，所有自定义异常类都需要继承本类</p>
+ * 基础异常类，所有自定义异常类都需要继承本类
  */
 @Getter
 public class BaseException extends RuntimeException {

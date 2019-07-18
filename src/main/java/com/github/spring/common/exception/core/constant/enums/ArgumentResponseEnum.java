@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * <p>参数校验异常返回结果</p>
+ * 参数校验异常返回结果
  */
 @Getter
 @AllArgsConstructor

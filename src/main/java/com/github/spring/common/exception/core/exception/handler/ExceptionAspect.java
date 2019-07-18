@@ -34,27 +34,15 @@ public class ExceptionAspect {
         try {
             return point.proceed();
         } catch (ConstraintViolationException e) {
-            /**
-             * 校验异常
-             *
-             * @param e 异常
-             * @return 异常结果
-             */
+            // 校验异常
             log.error("参数校验异常", e);
             return wrapperValidateResult(e, returnType);
         } catch (BaseException e) {
-            /**
-             * 业务异常
-             */
+            // 业务异常
             log.error(e.getMessage(), e);
             return returnType(e, e.getResponseEnum().getCode(), e.getMessage(), returnType);
         } catch (Exception e) {
-            /**
-             * 未定义异常
-             *
-             * @param e 异常
-             * @return 异常结果
-             */
+            // 未定义异常
             log.error(e.getClass().getName(), e);
             return returnType(e, CommonResponseEnum.SERVER_ERROR.getCode(), e.getClass().getName(),
                     returnType);

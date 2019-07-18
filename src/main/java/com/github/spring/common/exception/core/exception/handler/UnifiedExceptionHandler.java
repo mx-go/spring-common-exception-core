@@ -30,7 +30,7 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 /**
- * <p>全局异常处理器</p>
+ * 全局异常处理器
  */
 @Slf4j
 @Component

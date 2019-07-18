@@ -6,9 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
- * <pre>
- *  获取ip工具类
- * </pre>
+ * 获取ip工具类
  */
 @UtilityClass
 public class IpUtils {

@@ -9,9 +9,7 @@ import lombok.experimental.UtilityClass;
 import java.util.function.Supplier;
 
 /**
- * <pre>
- *  远程调用工具类
- * </pre>
+ * 远程调用工具类
  */
 @UtilityClass
 public class ClientUtils {
@@ -41,5 +39,4 @@ public class ClientUtils {
         CommonResponseEnum.assertSuccess(qr);
         return qr.getData();
     }
-
 }

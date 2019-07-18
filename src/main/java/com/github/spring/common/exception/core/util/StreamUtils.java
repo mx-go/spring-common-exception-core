@@ -10,9 +10,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
- * <pre>
- *  Stream 工具类
- * </pre>
+ * Stream 工具类
  */
 @UtilityClass
 public class StreamUtils {

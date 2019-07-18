@@ -7,9 +7,7 @@ import com.github.spring.common.exception.core.exception.BaseException;
 import java.text.MessageFormat;
 
 /**
- * <pre>
  * 通用异常
- * </pre>
  */
 public interface CommonExceptionAssert extends IResponseEnum, Assert {
 
