@@ -44,7 +44,7 @@ public class ExceptionAspect {
         } catch (Exception e) {
             // 未定义异常
             log.error(e.getClass().getName(), e);
-            return returnType(e, CommonResponseEnum.SERVER_ERROR.getCode(), e.getClass().getName(),
+            return returnType(e, CommonResponseEnum.SERVER_ERROR.getCode(), e.getClass().getSimpleName(),
                     returnType);
         }
     }
