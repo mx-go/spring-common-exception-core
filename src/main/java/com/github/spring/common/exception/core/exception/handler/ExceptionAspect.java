@@ -35,11 +35,11 @@ public class ExceptionAspect {
             return point.proceed();
         } catch (ConstraintViolationException e) {
             // 校验异常
-            log.error("参数校验异常", e);
+            log.info("参数校验异常", e);
             return wrapperValidateResult(e, returnType);
         } catch (BaseException e) {
             // 业务异常
-            log.error(e.getMessage(), e);
+            log.warn(e.getMessage(), e);
             return returnType(e, e.getResponseEnum().getCode(), e.getMessage(), returnType);
         } catch (Exception e) {
             // 未定义异常
