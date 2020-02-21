@@ -26,6 +26,7 @@ import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
@@ -108,6 +109,7 @@ public class UnifiedExceptionHandler {
             ServletRequestBindingException.class,
             ConversionNotSupportedException.class,
             MissingServletRequestPartException.class,
+            AsyncRequestTimeoutException.class
     })
     @ResponseBody
     public ErrorResponse handleServletException(Exception e) {
