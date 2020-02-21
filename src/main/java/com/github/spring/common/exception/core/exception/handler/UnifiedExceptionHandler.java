@@ -29,6 +29,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import javax.validation.ConstraintViolationException;
+
 /**
  * 全局异常处理器
  */
@@ -44,6 +46,7 @@ public class UnifiedExceptionHandler {
 
     /**
      * 当前环境
+     * default:dev
      */
     @Value("${spring.profiles.active:dev}")
     private String profile;
@@ -82,7 +85,7 @@ public class UnifiedExceptionHandler {
     @ExceptionHandler(value = BaseException.class)
     @ResponseBody
     public ErrorResponse handleBaseException(BaseException e) {
-        log.error(e.getMessage(), e);
+        log.warn(e.getMessage(), e);
 
         return new ErrorResponse(e.getResponseEnum().getCode(), getMessage(e));
     }
@@ -108,7 +111,7 @@ public class UnifiedExceptionHandler {
     })
     @ResponseBody
     public ErrorResponse handleServletException(Exception e) {
-        log.error(e.getMessage(), e);
+        log.warn(e.getMessage(), e);
         int code = CommonResponseEnum.SERVER_ERROR.getCode();
         try {
             ServletResponseEnum servletExceptionEnum = ServletResponseEnum.valueOf(e.getClass().getSimpleName());
@@ -138,8 +141,7 @@ public class UnifiedExceptionHandler {
     @ExceptionHandler(value = BindException.class)
     @ResponseBody
     public ErrorResponse handleBindException(BindException e) {
-        log.error("参数绑定校验异常", e);
-
+        log.warn("参数绑定校验异常", e);
         return wrapperBindingResult(e.getBindingResult());
     }
 
@@ -152,9 +154,27 @@ public class UnifiedExceptionHandler {
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     @ResponseBody
     public ErrorResponse handleValidException(MethodArgumentNotValidException e) {
-        log.error("参数绑定校验异常", e);
-
+        log.warn("参数绑定校验异常", e);
         return wrapperBindingResult(e.getBindingResult());
+    }
+
+    /**
+     * 参数校验(Valid)异常，将校验失败的所有异常组合成一条错误信息
+     *
+     * @param e 异常
+     * @return 异常结果
+     */
+    @ExceptionHandler(value = ConstraintViolationException.class)
+    @ResponseBody
+    public ErrorResponse handleValidException(ConstraintViolationException e) {
+        log.warn("参数绑定校验异常", e);
+
+        StringBuilder msg = new StringBuilder();
+        e.getConstraintViolations().forEach(constraintViolation -> {
+            msg.append(", ");
+            msg.append(constraintViolation.getMessage() == null ? "" : constraintViolation.getMessage());
+        });
+        return new ErrorResponse(ArgumentResponseEnum.VALID_ERROR.getCode(), msg.substring(2));
     }
 
     /**
