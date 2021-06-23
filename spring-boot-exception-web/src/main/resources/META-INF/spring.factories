@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.github.mx.exception.web.handler.UnifiedExceptionHandler
