@@ -2,12 +2,14 @@ package com.github.mx.exception.common.beans.request;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.ToString;
 
 /**
  * MP分页对象
  * <p>
  * Create by max on 2021/06/22
  */
+@ToString(callSuper = true)
 public class PageQuery<T> extends Page<T> {
     /**
      * 默认页数

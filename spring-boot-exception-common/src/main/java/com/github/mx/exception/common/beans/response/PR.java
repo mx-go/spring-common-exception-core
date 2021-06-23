@@ -8,7 +8,7 @@ import lombok.ToString;
  * <p>
  * Create by max on 2021/06/22
  */
-@ToString
+@ToString(callSuper = true)
 public class PR<T> extends R<Pager<T>> {
 
     private static final long serialVersionUID = 922746983081258472L;

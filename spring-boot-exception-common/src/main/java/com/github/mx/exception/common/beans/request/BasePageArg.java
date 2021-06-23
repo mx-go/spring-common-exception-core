@@ -1,12 +1,14 @@
 package com.github.mx.exception.common.beans.request;
 
 import com.github.mx.exception.common.beans.base.BaseRequest;
+import lombok.ToString;
 
 /**
  * 分页查询条件参数类
  * <p>
  * Create by max on 2021/06/22
  */
+@ToString(callSuper = true)
 public class BasePageArg extends BaseRequest {
     /**
      * 默认页码，第一页

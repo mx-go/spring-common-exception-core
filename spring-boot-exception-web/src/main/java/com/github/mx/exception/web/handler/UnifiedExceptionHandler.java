@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.github.mx.exception.common.beans.response.PR;
 import com.github.mx.exception.common.beans.response.R;
 import com.github.mx.exception.common.constant.CommonErrorCode;
+import com.github.mx.exception.common.constant.ExceptionConst;
 import com.github.mx.exception.common.exception.BaseException;
 import com.github.mx.exception.common.exception.BusinessException;
 import com.github.mx.exception.web.enums.ServletResponseEnum;
@@ -44,7 +45,6 @@ import javax.validation.ConstraintViolationException;
 @ControllerAdvice
 public class UnifiedExceptionHandler {
 
-    private static final String TRACE_MSG = "Provider:%s, Reason:%s";
     public static String APP_NAME;
 
     /**
@@ -132,7 +132,7 @@ public class UnifiedExceptionHandler {
             log.error("Class [{}] not defined in Enum {}", e.getClass().getName(), ServletResponseEnum.class.getName());
         }
 
-        String traceMsg = String.format(TRACE_MSG, APP_NAME, e.getMessage());
+        String traceMsg = String.format(ExceptionConst.TRACE_MESSAGE_PATTERN, APP_NAME, e.getMessage());
         if (ENV_PROD.equals(profile)) {
             // 当为生产环境, 不适合把具体的异常信息展示给用户, 比如404.
             code = CommonErrorCode.SERVER_ERROR.getCode();
@@ -203,7 +203,7 @@ public class UnifiedExceptionHandler {
     @ResponseBody
     public PR<Void> handleException(Exception e) {
         log.error(e.getMessage(), e);
-        String traceMsg = String.format(TRACE_MSG, APP_NAME, e.getClass().getName());
+        String traceMsg = String.format(ExceptionConst.TRACE_MESSAGE_PATTERN, APP_NAME, e.getClass().getName());
         if (ENV_PROD.equals(profile)) {
             // 当为生产环境, 不适合把具体的异常信息展示给用户, 比如数据库异常信息.
             int code = CommonErrorCode.SERVER_ERROR.getCode();
@@ -218,6 +218,6 @@ public class UnifiedExceptionHandler {
         if (StringUtils.isNotBlank(traceMsg)) {
             return traceMsg;
         }
-        return String.format(TRACE_MSG, APP_NAME, message);
+        return String.format(ExceptionConst.TRACE_MESSAGE_PATTERN, APP_NAME, message);
     }
 }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.github.mx.exception.common.beans.response.PR;
 import com.github.mx.exception.common.beans.response.R;
 import com.github.mx.exception.common.constant.CommonErrorCode;
+import com.github.mx.exception.common.constant.ExceptionConst;
 import com.github.mx.exception.common.exception.ArgumentException;
 import com.github.mx.exception.common.exception.BaseException;
 import com.github.mx.exception.common.exception.BusinessException;
@@ -30,12 +31,10 @@ import java.util.Set;
 @Slf4j
 public class ExceptionAspect implements MethodInterceptor {
 
-    private static final String TRACE_MSG = "Provider:%s, Reason:%s";
-    public static String APP_NAME;
-
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final ExecutableValidator methodValidator = factory.getValidator().forExecutables();
     private final Validator beanValidator = factory.getValidator();
+    public static String APP_NAME;
 
     public ExceptionAspect(StandardEnvironment environment) {
         APP_NAME = environment.resolvePlaceholders("${spring.application.name:}");
@@ -105,6 +104,6 @@ public class ExceptionAspect implements MethodInterceptor {
         if (StringUtils.isNotBlank(traceMsg)) {
             return traceMsg;
         }
-        return String.format(TRACE_MSG, APP_NAME, message);
+        return String.format(ExceptionConst.TRACE_MESSAGE_PATTERN, APP_NAME, message);
     }
 }
