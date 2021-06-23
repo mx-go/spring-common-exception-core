@@ -1,5 +1,7 @@
 package com.github.mx.exception.web.handler;
 
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.github.mx.exception.common.beans.response.PR;
 import com.github.mx.exception.common.beans.response.R;
 import com.github.mx.exception.common.constant.CommonErrorCode;
 import com.github.mx.exception.common.exception.BaseException;
@@ -9,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.StandardEnvironment;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.stereotype.Component;
@@ -41,6 +44,9 @@ import javax.validation.ConstraintViolationException;
 @ControllerAdvice
 public class UnifiedExceptionHandler {
 
+    private static final String TRACE_MSG = "Provider:%s, Reason:%s";
+    public static String APP_NAME;
+
     /**
      * 生产环境标识
      */
@@ -52,6 +58,10 @@ public class UnifiedExceptionHandler {
      */
     @Value("${spring.profiles.active:dev}")
     private String profile;
+
+    public UnifiedExceptionHandler(StandardEnvironment environment) {
+        APP_NAME = environment.resolvePlaceholders("${spring.application.name:}");
+    }
 
     /**
      * 可在此处理国际化消息
@@ -71,9 +81,10 @@ public class UnifiedExceptionHandler {
      */
     @ExceptionHandler(value = BusinessException.class)
     @ResponseBody
-    public R<Void> handleBusinessException(BaseException e) {
+    public PR<Void> handleBusinessException(BaseException e) {
         log.error(e.getMessage(), e);
-        return new R<>(e.getResponseEnum().getCode(), getMessage(e));
+        String traceMsg = getTraceMsg(e.getResponseEnum().getTraceMessage(), e.getMessage());
+        return new PR<>(e.getResponseEnum().getCode(), getMessage(e), traceMsg);
     }
 
     /**
@@ -84,9 +95,10 @@ public class UnifiedExceptionHandler {
      */
     @ExceptionHandler(value = BaseException.class)
     @ResponseBody
-    public R<Void> handleBaseException(BaseException e) {
+    public PR<Void> handleBaseException(BaseException e) {
         log.warn(e.getMessage(), e);
-        return new R<>(e.getResponseEnum().getCode(), getMessage(e));
+        String traceMsg = getTraceMsg(e.getResponseEnum().getTraceMessage(), e.getMessage());
+        return new PR<>(e.getResponseEnum().getCode(), getMessage(e), traceMsg);
     }
 
     /**
@@ -110,7 +122,7 @@ public class UnifiedExceptionHandler {
             AsyncRequestTimeoutException.class
     })
     @ResponseBody
-    public R<Void> handleServletException(Exception e) {
+    public PR<Void> handleServletException(Exception e) {
         log.warn(e.getMessage(), e);
         int code = CommonErrorCode.SERVER_ERROR.getCode();
         try {
@@ -120,14 +132,15 @@ public class UnifiedExceptionHandler {
             log.error("Class [{}] not defined in Enum {}", e.getClass().getName(), ServletResponseEnum.class.getName());
         }
 
+        String traceMsg = String.format(TRACE_MSG, APP_NAME, e.getMessage());
         if (ENV_PROD.equals(profile)) {
             // 当为生产环境, 不适合把具体的异常信息展示给用户, 比如404.
             code = CommonErrorCode.SERVER_ERROR.getCode();
             BaseException baseException = new BaseException(CommonErrorCode.SERVER_ERROR);
             String message = getMessage(baseException);
-            return new R<>(code, message);
+            return new PR<>(code, message, traceMsg);
         }
-        return new R<>(code, e.getMessage());
+        return new PR<>(code, e.getMessage(), traceMsg);
     }
 
     /**
@@ -170,14 +183,14 @@ public class UnifiedExceptionHandler {
      */
     @ExceptionHandler(value = ConstraintViolationException.class)
     @ResponseBody
-    public R<Void> handleValidException(ConstraintViolationException e) {
+    public PR<Void> handleValidException(ConstraintViolationException e) {
         log.info("Argument valid exception", e);
         StringBuilder msg = new StringBuilder();
         e.getConstraintViolations().forEach(constraintViolation -> {
             msg.append(", ");
             msg.append(constraintViolation.getMessage() == null ? "" : constraintViolation.getMessage());
         });
-        return new R<>(CommonErrorCode.VALID_ERROR.getCode(), msg.substring(2));
+        return new PR<>(CommonErrorCode.VALID_ERROR.getCode(), msg.substring(2));
     }
 
     /**
@@ -188,15 +201,23 @@ public class UnifiedExceptionHandler {
      */
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
-    public R<Void> handleException(Exception e) {
+    public PR<Void> handleException(Exception e) {
         log.error(e.getMessage(), e);
+        String traceMsg = String.format(TRACE_MSG, APP_NAME, e.getClass().getName());
         if (ENV_PROD.equals(profile)) {
             // 当为生产环境, 不适合把具体的异常信息展示给用户, 比如数据库异常信息.
             int code = CommonErrorCode.SERVER_ERROR.getCode();
             BaseException baseException = new BaseException(CommonErrorCode.SERVER_ERROR);
             String message = getMessage(baseException);
-            return new R<>(code, message);
+            return new PR<>(code, message, traceMsg);
         }
-        return new R<>(CommonErrorCode.SERVER_ERROR.getCode(), e.getMessage());
+        return new PR<>(CommonErrorCode.SERVER_ERROR.getCode(), e.getMessage(), traceMsg);
+    }
+
+    private String getTraceMsg(String traceMsg, String message) {
+        if (StringUtils.isNotBlank(traceMsg)) {
+            return traceMsg;
+        }
+        return String.format(TRACE_MSG, APP_NAME, message);
     }
 }

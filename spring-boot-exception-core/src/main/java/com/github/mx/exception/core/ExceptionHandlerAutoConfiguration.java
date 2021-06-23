@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportAware;
 import org.springframework.context.annotation.Role;
 import org.springframework.core.annotation.AnnotationAttributes;
+import org.springframework.core.env.StandardEnvironment;
 import org.springframework.core.type.AnnotationMetadata;
 
 /**
@@ -35,18 +36,18 @@ public class ExceptionHandlerAutoConfiguration implements ImportAware {
 
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-    public AspectJExpressionPointcutAdvisor exceptionHandlerAdvisor() {
+    public AspectJExpressionPointcutAdvisor exceptionHandlerAdvisor(StandardEnvironment environment) {
         AspectJExpressionPointcutAdvisor advisor = new AspectJExpressionPointcutAdvisor();
         advisor.setExpression(enableAnnotation.getString("expression"));
         advisor.setOrder(enableAnnotation.getNumber("order"));
-        advisor.setAdvice(exceptionAspect());
+        advisor.setAdvice(exceptionAspect(environment));
         return advisor;
     }
 
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-    public ExceptionAspect exceptionAspect() {
-        return new ExceptionAspect();
+    public ExceptionAspect exceptionAspect(StandardEnvironment environment) {
+        return new ExceptionAspect(environment);
     }
 
     @Bean

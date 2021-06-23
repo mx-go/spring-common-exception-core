@@ -1,5 +1,7 @@
 package com.github.mx.exception.core.handler;
 
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.github.mx.exception.common.beans.response.PR;
 import com.github.mx.exception.common.beans.response.R;
 import com.github.mx.exception.common.constant.CommonErrorCode;
 import com.github.mx.exception.common.exception.ArgumentException;
@@ -8,6 +10,7 @@ import com.github.mx.exception.common.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.springframework.core.env.StandardEnvironment;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -27,11 +30,16 @@ import java.util.Set;
 @Slf4j
 public class ExceptionAspect implements MethodInterceptor {
 
-    private static final String TRACE_MSG = "provider:%s, reason:%s";
+    private static final String TRACE_MSG = "Provider:%s, Reason:%s";
+    public static String APP_NAME;
 
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final ExecutableValidator methodValidator = factory.getValidator().forExecutables();
     private final Validator beanValidator = factory.getValidator();
+
+    public ExceptionAspect(StandardEnvironment environment) {
+        APP_NAME = environment.resolvePlaceholders("${spring.application.name:}");
+    }
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
@@ -49,16 +57,20 @@ public class ExceptionAspect implements MethodInterceptor {
             return invocation.proceed();
         } catch (ArgumentException ae) {
             log.info("Method ArgumentException.", ae);
-            return new R<>(ae.getResponseEnum().getCode(), ae.getMessage());
+            String traceMsg = getTraceMsg(ae.getResponseEnum().getTraceMessage(), ae.getMessage());
+            return new PR<>(ae.getResponseEnum().getCode(), ae.getMessage(), traceMsg);
         } catch (BusinessException be) {
             log.warn("Method BusinessException.", be);
-            return new R<>(be.getResponseEnum().getCode(), be.getMessage());
+            String traceMsg = getTraceMsg(be.getResponseEnum().getTraceMessage(), be.getMessage());
+            return new PR<>(be.getResponseEnum().getCode(), be.getMessage(), traceMsg);
         } catch (BaseException ben) {
             log.warn("Method BaseException.", ben);
-            return new R<>(ben.getResponseEnum().getCode(), ben.getMessage());
+            String traceMsg = getTraceMsg(ben.getResponseEnum().getTraceMessage(), ben.getMessage());
+            return new PR<>(ben.getResponseEnum().getCode(), ben.getMessage(), traceMsg);
         } catch (Exception e) {
             log.error("Method Exception.", e);
-            return new R<>(CommonErrorCode.SERVER_ERROR.getCode(), e.getClass().getSimpleName());
+            String traceMsg = getTraceMsg(StringUtils.EMPTY, e.getMessage());
+            return new PR<>(CommonErrorCode.SERVER_ERROR.getCode(), e.getClass().getSimpleName(), traceMsg);
         }
     }
 
@@ -87,5 +99,12 @@ public class ExceptionAspect implements MethodInterceptor {
 
     private <T> Set<ConstraintViolation<T>> validate(T bean) {
         return beanValidator.validate(bean);
+    }
+
+    private String getTraceMsg(String traceMsg, String message) {
+        if (StringUtils.isNotBlank(traceMsg)) {
+            return traceMsg;
+        }
+        return String.format(TRACE_MSG, APP_NAME, message);
     }
 }
