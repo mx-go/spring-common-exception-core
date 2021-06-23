@@ -44,6 +44,6 @@ public class BaseResponse {
     }
 
     public boolean isSuccess() {
-        return (CommonErrorCode.SUCCESS.getCode() == this.code);
+        return CommonErrorCode.SUCCESS.getCode() == this.code;
     }
 }

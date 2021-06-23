@@ -1,6 +1,7 @@
 package com.github.mx.exception.common.beans.response;
 
 import com.github.mx.exception.common.beans.base.Pager;
+import com.github.mx.exception.common.constant.IResponseEnum;
 import lombok.ToString;
 
 /**
@@ -27,5 +28,9 @@ public class PR<T> extends R<Pager<T>> {
 
     public PR(int code, String msg, String traceMsg) {
         super(code, msg, traceMsg);
+    }
+
+    public static <T> PR<T> fail(IResponseEnum responseEnum) {
+        return new PR<>(responseEnum.getCode(), responseEnum.getMessage());
     }
 }

@@ -11,6 +11,8 @@ import lombok.ToString;
  */
 @ToString(callSuper = true)
 public class PageQuery<T> extends Page<T> {
+
+    private static final long serialVersionUID = 6912414604580544829L;
     /**
      * 默认页数
      */

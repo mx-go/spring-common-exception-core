@@ -6,7 +6,6 @@ package com.github.mx.exception.common.constant;
  * Create by max on 2021/06/23
  **/
 public interface ExceptionConst {
-
     /**
      * trace信息
      */

@@ -1,6 +1,7 @@
 package com.github.mx.exception.common.beans.response;
 
 import com.github.mx.exception.common.beans.base.BaseResponse;
+import com.github.mx.exception.common.constant.IResponseEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -36,5 +37,9 @@ public class R<T> extends BaseResponse implements Serializable {
 
     public R(int code, String msg, String traceMsg) {
         super(code, msg, traceMsg);
+    }
+
+    public static <T> R<T> failed(IResponseEnum responseEnum) {
+        return new R<>(responseEnum.getCode(), responseEnum.getMessage());
     }
 }

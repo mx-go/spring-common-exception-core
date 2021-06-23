@@ -21,7 +21,7 @@
     <dependencies>
         <dependency>
             <groupId>com.github.mx-go</groupId>
-            <artifactId>spring-boot-exception-core</artifactId>
+            <artifactId>spring-boot-exception-common</artifactId>
             <version>1.0.0</version>
         </dependency>
 
